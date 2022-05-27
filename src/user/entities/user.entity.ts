@@ -1,6 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { GoogleProfile } from '../interfaces/google';
+
+import { Otp } from 'src/otp/entities/otp.entity';
 
 @Entity()
 export class User {
@@ -30,4 +32,7 @@ export class User {
 
   @Column('json', { default: null })
   ggProfile: GoogleProfile;
+
+  @OneToMany(() => Otp, (otp) => otp.user)
+  otps: Otp[];
 }

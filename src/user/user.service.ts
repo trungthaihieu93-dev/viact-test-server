@@ -13,14 +13,31 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(newUser: RegisterFormDTO): Promise<InsertResult> {
+  async create(newUser: RegisterFormDTO): Promise<User> {
     newUser.password = await generateHash(newUser.password);
 
-    return this.userRepository.insert(newUser);
+    await this.userRepository.insert(newUser);
+
+    const result = await this.userRepository.findOneBy({
+      email: newUser.email,
+    });
+
+    return result;
   }
 
   async findByEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
+  }
+
+  async findExistedUser(email: string, username: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: [
+        {
+          email,
+        },
+        { username },
+      ],
+    });
   }
 
   async getById(id: number): Promise<User> {
