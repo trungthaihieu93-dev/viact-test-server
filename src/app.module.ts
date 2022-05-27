@@ -10,8 +10,6 @@ import { RateLimiterModule } from './rate-limiter/rate-limiter.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
-import { ResponseInterceptor } from './core/interceptors/response.interceptor';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -22,12 +20,6 @@ import { ResponseInterceptor } from './core/interceptors/response.interceptor';
     RateLimiterModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ResponseInterceptor,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

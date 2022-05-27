@@ -22,12 +22,12 @@ export class User {
   @Column({ length: 500 })
   lastName: string;
 
-  @Column('text')
+  @Column('text', { default: null })
   avatar: string;
 
-  @Column()
+  @Column({ default: false })
   isActive: boolean;
 
-  @Column('json')
+  @Column('json', { default: null })
   ggProfile: GoogleProfile;
 }

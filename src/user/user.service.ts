@@ -1,7 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { InsertResult, Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
+import { RegisterFormDTO } from 'src/auth/dtos/auth.dto';
+
+import { generateHash } from 'src/utils/password';
 
 @Injectable()
 export class UserService {
@@ -10,16 +13,18 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(user: User): Promise<User | User[]> {
-    return await this.userRepository.create(user);
+  async create(newUser: RegisterFormDTO): Promise<InsertResult> {
+    newUser.password = await generateHash(newUser.password);
+
+    return this.userRepository.insert(newUser);
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOneBy({ email });
+    return this.userRepository.findOneBy({ email });
   }
 
   async getById(id: number): Promise<User> {
-    return await this.userRepository.findOneBy({
+    return this.userRepository.findOneBy({
       id,
     });
   }

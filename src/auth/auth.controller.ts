@@ -8,17 +8,23 @@ import {
   UseGuards,
   Req,
   InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
 
-import { parseResponse } from 'src/core/responses/base';
+import { parseError, parseResponse } from 'src/core/responses/base';
 
 import { LocalAuthGuard } from './guards/local.guard';
 import { LoginFormDTO, RegisterFormDTO } from './dtos/auth.dto';
 
 import { AuthService } from './auth.service';
+import { UserService } from 'src/user/user.service';
+
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
@@ -32,16 +38,25 @@ export class AuthController {
         }),
       );
     } catch (error) {
-      throw new InternalServerErrorException(error);
+      return res.status(500).send('Internal Server Error');
     }
   }
 
   @UsePipes(new ValidationPipe())
   @Post('/register')
-  async register() {
+  async register(@Body() registerForm: RegisterFormDTO, @Res() res) {
     try {
+      const user = await this.userService.findByEmail(registerForm.email);
+
+      if (user) {
+        return res.status(400).send(parseError('User existed!', 400));
+      }
+
+      const result = await this.userService.create(registerForm);
+
+      return res.status(201).send(parseResponse(result));
     } catch (error) {
-      console.error(error);
+      return res.status(500).send('Internal Server Error');
     }
   }
 

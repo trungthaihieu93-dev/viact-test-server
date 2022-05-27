@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm';
+import * as path from 'path';
 
 import { databaseConfig } from 'src/core/config/database';
 
@@ -16,7 +17,11 @@ export const databaseProviders = [
           username: process?.env?.DATABASE_USER || '',
           password: process?.env?.DATABASE_PASS || '',
           database: 'test',
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+          entities: [
+            path
+              .join(__dirname, '/../**/**.entity{.ts,.js}')
+              .replace('core/', ''),
+          ],
           synchronize: true,
         },
         ...(process?.env?.DATABASE_URL
