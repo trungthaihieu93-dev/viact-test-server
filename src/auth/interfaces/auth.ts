@@ -10,3 +10,9 @@ export interface LoginForm {
   email: string;
   password: string;
 }
+
+export interface ResetPasswordForm {
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+}

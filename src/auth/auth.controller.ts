@@ -12,7 +12,12 @@ import {
 import { parseError, parseResponse } from 'src/core/responses/base';
 
 import { LocalAuthGuard } from './guards/local.guard';
-import { LoginFormDTO, RegisterFormDTO } from './dtos/auth.dto';
+import { JwtGuard } from './guards/jwt.guard';
+import {
+  LoginFormDTO,
+  RegisterFormDTO,
+  ResetPasswordFormDTO,
+} from './dtos/auth.dto';
 
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
@@ -75,11 +80,25 @@ export class AuthController {
     }
   }
 
+  @UseGuards(JwtGuard)
+  @UsePipes(new ValidationPipe())
   @Post('/reset-password')
-  async resetPassword() {
+  async resetPassword(
+    @Body() resetPasswordFormDto: ResetPasswordFormDTO,
+    @Res() res,
+  ) {
     try {
+      await this.authService.resetPassword(resetPasswordFormDto);
+
+      return res
+        .status(202)
+        .send(parseResponse('Reset password successfully!'));
     } catch (error) {
-      console.error(error);
+      if (error.status === 400) {
+        return res.status(400).send(parseError(error.message, 400));
+      }
+
+      return res.status(500).send(parseError('Internal Server Error', 500));
     }
   }
 }

@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-import { LoginForm, RegisterForm } from '../interfaces/auth';
+import { LoginForm, RegisterForm, ResetPasswordForm } from '../interfaces/auth';
 
 export class LoginFormDTO implements LoginForm {
   @IsEmail()
@@ -25,4 +25,15 @@ export class RegisterFormDTO implements RegisterForm {
 
   @IsNotEmpty()
   username: string;
+}
+
+export class ResetPasswordFormDTO implements ResetPasswordForm {
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  newPassword: string;
+
+  @IsNotEmpty()
+  oldPassword: string;
 }

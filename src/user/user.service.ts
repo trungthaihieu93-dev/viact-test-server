@@ -25,7 +25,7 @@ export class UserService {
     return result;
   }
 
-  async fetchUserCredentials(email: string): Promise<User> {
+  async fetchUserCredentials(email?: string): Promise<User> {
     return this.userRepository
       .createQueryBuilder('user')
       .select('user')
@@ -45,9 +45,18 @@ export class UserService {
     });
   }
 
-  async getById(id: number): Promise<User> {
+  async getById(userId: number): Promise<User> {
     return this.userRepository.findOneBy({
-      id,
+      id: userId,
     });
+  }
+
+  async update(userId: number, payload: Partial<User>) {
+    this.userRepository.update(
+      { id: userId },
+      {
+        ...payload,
+      },
+    );
   }
 }

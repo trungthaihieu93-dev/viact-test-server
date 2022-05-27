@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
 
 import { UserService } from 'src/user/user.service';
 
-import { isPasswordMatch } from 'src/utils/password';
+import { generateHash, isPasswordMatch } from 'src/utils/password';
 
 import { JWTPayload } from './interfaces/jwt';
-
+import { ResetPasswordFormDTO } from './dtos/auth.dto';
+import e from 'express';
 @Injectable()
 export class AuthService {
   constructor(
@@ -35,5 +36,21 @@ export class AuthService {
     return this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET_KEY,
     });
+  }
+
+  async resetPassword(resetPasswordFormDto: ResetPasswordFormDTO) {
+    const { email, oldPassword, newPassword } = resetPasswordFormDto;
+
+    const user = await this.userService.fetchUserCredentials(email);
+
+    if (user && (await isPasswordMatch(oldPassword, user.password))) {
+      const payload: Partial<User> = {
+        password: await generateHash(newPassword),
+      };
+
+      await this.userService.update(user.id, payload);
+    } else {
+      throw new BadRequestException('Wrong password');
+    }
   }
 }
