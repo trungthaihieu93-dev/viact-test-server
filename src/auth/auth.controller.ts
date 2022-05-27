@@ -38,7 +38,7 @@ export class AuthController {
         }),
       );
     } catch (error) {
-      return res.status(500).send('Internal Server Error');
+      return res.status(500).send(parseError('Internal Server Error', 500));
     }
   }
 
@@ -56,7 +56,7 @@ export class AuthController {
 
       return res.status(201).send(parseResponse(result));
     } catch (error) {
-      return res.status(500).send('Internal Server Error');
+      return res.status(500).send(parseError('Internal Server Error', 500));
     }
   }
 
