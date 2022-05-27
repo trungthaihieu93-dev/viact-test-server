@@ -16,9 +16,9 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.userService.findByEmail(email);
+    const user = await this.userService.fetchUserCredentials(email);
 
-    if (user && isPasswordMatch(pass, user.password)) {
+    if (user && (await isPasswordMatch(pass, user.password))) {
       return user;
     }
 
@@ -32,6 +32,8 @@ export class AuthService {
       id: user.id,
     };
 
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET_KEY,
+    });
   }
 }

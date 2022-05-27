@@ -19,7 +19,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     PassportModule,
     OtpModule,
     JwtModule.register({
-      secret: process?.env?.JWT_SECRET_KEY || 'jwt_secret',
+      secret: process.env.JWT_SECRET_KEY || 'jwt_secret',
       signOptions: { expiresIn: JWT_EXPIRE_TIME },
     }),
   ],

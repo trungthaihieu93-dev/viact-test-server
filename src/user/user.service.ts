@@ -25,8 +25,13 @@ export class UserService {
     return result;
   }
 
-  async findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOneBy({ email });
+  async fetchUserCredentials(email: string): Promise<User> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .select('user')
+      .where('user.email = :email', { email })
+      .addSelect('user.password') // query password only when authentication
+      .getOne();
   }
 
   async findExistedUser(email: string, username: string): Promise<User> {
