@@ -3,7 +3,7 @@ export interface BaseResponse<T> {
   data: T;
 }
 
-export const parseResponse = (data: any) => ({ data });
+export const parseResponse = (data: any) => data;
 
 export const parseError = (error: string, status: number) => ({
   statusCode: status,
