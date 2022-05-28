@@ -71,3 +71,11 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Further guidance before running the server
+
+Install MySQL server locally using Docker following this url [Docker - MySQL](https://hub.docker.com/_/mysql) or any other way
+
+Create a new `test` database using CLI or DB Management Tools like MySQL Workbench/DBeaver Community/...etc...
+
+Copy the file `env.example` to `.env` and fill in the needed configurations
